@@ -1,7 +1,4 @@
-from abc import ABC
 import torch
-from transformers import PreTrainedModel
-from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import TokenClassifierOutput
 from decepticons.interfaces.better_abc import ABCMeta
 from decepticons.interfaces.huggingface import HFClassificationInterface
@@ -42,4 +39,12 @@ class TokenClassificationCrfMixin(HFClassificationInterface, metaclass=ABCMeta):
         emissions = outputs.hidden_states[0]
         log_likelihood = self.classifier(
             emissions=emissions, tags=labels, mask=attention_mask
+        )
+        loss = torch.neg(torch.abs(log_likelihood))
+        logits = None
+        return TokenClassifierOutput(
+            loss=loss,
+            logits=logits,
+            hidden_states=outputs.hidden_states,
+            attentions=outputs.attentions
         )

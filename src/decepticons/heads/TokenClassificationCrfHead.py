@@ -7,6 +7,6 @@ class TokenClassificationCrfHead(nn.Module):
         super().__init__()
         self.classifier = CRF(config.vocab_size)
 
-    def forward(self, hidden_states):
-        x = self.classifier(hidden_states)
+    def forward(self, emissions, **kwargs):
+        x = self.classifier(emissions, **kwargs)
         return x
