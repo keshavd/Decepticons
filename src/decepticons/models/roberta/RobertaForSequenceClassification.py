@@ -1,6 +1,6 @@
 from transformers import RobertaPreTrainedModel, RobertaModel
 from transformers.models.roberta.modeling_roberta import RobertaClassificationHead
-from decepticons.mixins.classification.SequenceClassificationMixin import (
+from src.decepticons.mixins.classification.SequenceClassificationMixin import (
     SequenceClassificationMixin,
 )
 

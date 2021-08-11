@@ -2,8 +2,8 @@ from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 import torch
 from transformers.modeling_outputs import SequenceClassifierOutput
 from transformers import PreTrainedModel
-from decepticons.interfaces.huggingface import HFClassificationInterface
-from decepticons.interfaces.better_abc import ABCMeta
+from src.decepticons.interfaces import HFClassificationInterface
+from src.decepticons.interfaces import ABCMeta
 
 
 class SequenceClassificationMixin(

@@ -2,8 +2,8 @@ import torch
 from transformers import PreTrainedModel
 from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import TokenClassifierOutput
-from decepticons.interfaces.huggingface import HFClassificationInterface
-from decepticons.interfaces.better_abc import ABCMeta
+from src.decepticons.interfaces import HFClassificationInterface
+from src.decepticons.interfaces import ABCMeta
 
 
 class TokenClassificationMixin(
