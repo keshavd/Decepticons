@@ -1,8 +1,8 @@
 from transformers import RobertaPreTrainedModel, RobertaModel
-from bioformers.utils.huggingface.mixins.classification.TokenClassificationMixin import (
+from decepticons.mixins.classification.TokenClassificationMixin import (
     TokenClassificationMixin,
 )
-from bioformers.utils.huggingface.heads.TokenClassificationHead import (
+from decepticons.heads.TokenClassificationHead import (
     TokenClassificationHead,
 )
 

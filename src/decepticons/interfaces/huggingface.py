@@ -1,8 +1,7 @@
-from transformers import PreTrainedModel
-from better_abc import ABCMeta, abstract_attribute, abstractmethod
+from .better_abc import ABCMeta, abstract_attribute, abstractmethod
 
 
-class HFModelInterface(PreTrainedModel, metaclass=ABCMeta):
+class HFModelInterface(metaclass=ABCMeta):
     @abstract_attribute
     def model(self):
         pass

@@ -3,9 +3,11 @@ import torch
 from transformers import PreTrainedModel
 from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import TokenClassifierOutput
+from decepticons.interfaces.better_abc import ABCMeta
+from decepticons.interfaces.huggingface import HFClassificationInterface
 
 
-class TokenClassificationCrfMixin(PreTrainedModel, ABC):
+class TokenClassificationCrfMixin(HFClassificationInterface, metaclass=ABCMeta):
     def __init__(self, config):
         super().__init__(config=config)
         self.num_labels = config.num_labels

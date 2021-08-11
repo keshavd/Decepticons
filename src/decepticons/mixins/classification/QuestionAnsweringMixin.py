@@ -1,8 +1,8 @@
 from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import QuestionAnsweringModelOutput
 from transformers import PreTrainedModel
-from src.decepticons.interfaces import HFClassificationInterface
-from src.decepticons.interfaces import ABCMeta
+from decepticons.interfaces.huggingface import HFClassificationInterface
+from decepticons.interfaces.better_abc import ABCMeta
 
 
 class QuestionAnsweringMixin(

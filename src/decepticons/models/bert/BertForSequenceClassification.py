@@ -1,8 +1,8 @@
 from transformers import BertPreTrainedModel, BertModel
-from src.decepticons.mixins.classification.SequenceClassificationMixin import (
+from decepticons.mixins.classification.SequenceClassificationMixin import (
     SequenceClassificationMixin,
 )
-from src.decepticons import (
+from decepticons.heads.BertSequenceClassificationHead import (
     BertSequenceClassificationHead,
 )
 
