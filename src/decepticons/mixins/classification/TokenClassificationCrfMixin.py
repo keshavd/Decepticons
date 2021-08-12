@@ -1,14 +1,8 @@
 import torch
 from transformers.modeling_outputs import TokenClassifierOutput
-from decepticons.interfaces.better_abc import ABCMeta
-from decepticons.interfaces.huggingface import HFClassificationInterface
 
 
-class TokenClassificationCrfMixin(HFClassificationInterface, metaclass=ABCMeta):
-    def __init__(self, config):
-        super().__init__(config=config)
-        self.num_labels = config.num_labels
-
+class TokenClassificationCrfMixin:
     def forward(
         self,
         input_ids=None,
@@ -46,5 +40,5 @@ class TokenClassificationCrfMixin(HFClassificationInterface, metaclass=ABCMeta):
             loss=loss,
             logits=logits,
             hidden_states=outputs.hidden_states,
-            attentions=outputs.attentions
+            attentions=outputs.attentions,
         )

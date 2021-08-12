@@ -1,4 +1,5 @@
 from transformers import BertPreTrainedModel, BertModel
+from decepticons.interfaces.huggingface import HFClassificationInterface
 from decepticons.mixins.classification.TokenClassificationMixin import (
     TokenClassificationMixin,
 )
@@ -7,18 +8,21 @@ from decepticons.heads.TokenClassificationHead import (
 )
 
 
-class BertForTokenClassification(BertPreTrainedModel, TokenClassificationMixin):
+class BertForTokenClassification(
+    TokenClassificationMixin, BertPreTrainedModel, HFClassificationInterface
+):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
 
-    def __init__(self, config):
-        super().__init__(config)
+    def __init__(self, config, **kwargs):
+        super().__init__(config=config)
         self.model = BertModel(config=config, add_pooling_layer=False)
-        self.classifier = TokenClassificationHead(config=config)
+        self.classifier = (TokenClassificationHead(config=config),)
+        self.num_labels = config.num_labels
 
         self.init_weights()
 
-    def get_model_outputs(self, **kwargs):
-        outputs = self.model(**kwargs)
+    def get_model_outputs(self, *args, **kwargs):
+        outputs = self.model(*args, **kwargs)
         outputs.sequence_output = outputs[0]
         outputs.pooled_output = outputs[1]
         return outputs

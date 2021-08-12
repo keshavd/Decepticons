@@ -1,16 +1,14 @@
 import torch
 from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import TokenClassifierOutput
-from decepticons.interfaces.huggingface import HFClassificationInterface
-from decepticons.interfaces.better_abc import ABCMeta
+from transformers import PreTrainedModel
 
 
-class TokenClassificationMixin(HFClassificationInterface, metaclass=ABCMeta):
+class TokenClassificationMixin(PreTrainedModel):
     """Performs Token level Classification with the `sequence_output` from a model"""
 
-    def __init__(self, config):
-        super().__init__(config=config)
-        self.num_labels = config.num_labels
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
 
     def forward(
         self,

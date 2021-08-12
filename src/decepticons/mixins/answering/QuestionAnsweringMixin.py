@@ -1,17 +1,10 @@
 from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import QuestionAnsweringModelOutput
 from transformers import PreTrainedModel
-from decepticons.interfaces.huggingface import HFClassificationInterface
-from decepticons.interfaces.better_abc import ABCMeta
 
 
-class QuestionAnsweringMixin(
-    PreTrainedModel, HFClassificationInterface, metaclass=ABCMeta
-):
+class QuestionAnsweringMixin(PreTrainedModel):
     """Used for question and answer modelling using the `pooled_output` from a model"""
-
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
 
     def forward(
         self,
@@ -30,6 +23,7 @@ class QuestionAnsweringMixin(
         return_dict = (
             return_dict if return_dict is not None else self.config.use_return_dict
         )
+
         outputs = self.get_model_outputs(
             input_ids,
             attention_mask=attention_mask,

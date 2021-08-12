@@ -5,14 +5,17 @@ from decepticons.mixins.classification.TokenClassificationMixin import (
 from decepticons.heads.TokenClassificationHead import (
     TokenClassificationHead,
 )
+from decepticons.interfaces.huggingface import HFClassificationInterface
 
 
-class RobertaForTokenClassification(RobertaPreTrainedModel, TokenClassificationMixin):
+class RobertaForTokenClassification(
+    TokenClassificationMixin, RobertaPreTrainedModel, HFClassificationInterface
+):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
     _keys_to_ignore_on_load_missing = [r"position_ids"]
 
     def __init__(self, config):
-        super().__init__(config)
+        super().__init__(config=config)
         self.model = RobertaModel(config=config, add_pooling_layer=False)
         self.classifier = TokenClassificationHead(config=config)
 

@@ -9,12 +9,7 @@ setuptools.setup(
     author="Keshav Dial",
     author_email="keshav@magarveylab.ca",
     description="An Extension of transformers",
-    install_requires=[
-        'torch',
-        'pytorch-crf',
-        'transformers',
-        'tokenizers'
-    ],
+    install_requires=["torch", "pytorch-crf", "transformers", "tokenizers"],
     long_description=long_description,
     long_description_content_type="text/markdown",
     url="https://github.com/keshavd/decepticons",

@@ -1,16 +1,25 @@
-from .better_abc import ABCMeta, abstract_attribute, abstractmethod
+from abc import ABC, abstractmethod
 
 
-class HFModelInterface(metaclass=ABCMeta):
-    @abstract_attribute
-    def model(self):
-        pass
+class HFModelInterface(ABC):
+    def __init__(self, **kwargs):
+        self.model = None
+        self.config = None
 
     @abstractmethod
-    def get_model_outputs(self, **kwargs):
+    def get_model_outputs(self, *args, **kwargs):
         pass
 
 
-class HFClassificationInterface(HFModelInterface, metaclass=ABCMeta):
-    def classifier(self):
-        pass
+class HFClassificationInterface(HFModelInterface, ABC):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.classifier = None
+        self.num_labels = None
+        self.problem_type = None
+
+
+class HFQuestionAnsweringInterface(HFModelInterface, ABC):
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        self.qa_outputs = None

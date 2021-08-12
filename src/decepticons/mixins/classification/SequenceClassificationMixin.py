@@ -2,21 +2,17 @@ from torch.nn import BCEWithLogitsLoss, CrossEntropyLoss, MSELoss
 import torch
 from transformers.modeling_outputs import SequenceClassifierOutput
 from transformers import PreTrainedModel
-from decepticons.interfaces.huggingface import HFClassificationInterface
-from decepticons.interfaces.better_abc import ABCMeta
 
 
-class SequenceClassificationMixin(HFClassificationInterface, metaclass=ABCMeta):
+class SequenceClassificationMixin(PreTrainedModel):
     """Performs Sequence level Classification with the `pooled_output` from a model"""
 
-    def __init__(self, problem_type: str = None, **kwargs):
+    def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self.problem_type = problem_type
-        self.num_labels = self.config.num_labels
 
     def forward(
         self,
-        input_ids,
+        input_ids=None,
         attention_mask=None,
         token_type_ids=None,
         position_ids=None,
