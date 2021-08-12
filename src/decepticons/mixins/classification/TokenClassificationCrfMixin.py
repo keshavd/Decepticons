@@ -1,8 +1,9 @@
 import torch
 from transformers.modeling_outputs import TokenClassifierOutput
+from transformers import PreTrainedModel
 
 
-class TokenClassificationCrfMixin:
+class TokenClassificationCrfMixin(PreTrainedModel):
     def forward(
         self,
         input_ids=None,
