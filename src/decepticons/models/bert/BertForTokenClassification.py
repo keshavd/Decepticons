@@ -23,6 +23,6 @@ class BertForTokenClassification(
 
     def get_model_outputs(self, *args, **kwargs):
         outputs = self.model(*args, **kwargs)
-        outputs.sequence_output = outputs[0]
-        outputs.pooled_output = outputs[1]
+        outputs.sequence_output = outputs.last_hidden_state
+        outputs.pooled_output = outputs.pooler_output
         return outputs
