@@ -16,7 +16,7 @@ class BertForTokenClassification(
     def __init__(self, config, **kwargs):
         super().__init__(config=config)
         self.model = BertModel(config=config, add_pooling_layer=False)
-        self.classifier = (TokenClassificationHead(config=config),)
+        self.classifier = TokenClassificationHead(config=config)
         self.num_labels = config.num_labels
 
         self.init_weights()
