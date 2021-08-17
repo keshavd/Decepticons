@@ -18,11 +18,12 @@ class RobertaForTokenClassification(
         super().__init__(config=config)
         self.model = RobertaModel(config=config, add_pooling_layer=False)
         self.classifier = TokenClassificationHead(config=config)
+        self.num_labels = config.num_labels
 
         self.init_weights()
 
     def get_model_outputs(self, **kwargs):
         outputs = self.model(**kwargs)
-        outputs.sequence_output = outputs[0]
-        outputs.pooled_output = outputs[1]
+        outputs.sequence_output = outputs.last_hidden_state
+        outputs.pooled_output = outputs.pooler_output
         return outputs
