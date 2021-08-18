@@ -19,7 +19,16 @@ class RobertaForSequenceClassification(
         self.init_weights()
 
     def get_model_outputs(self, *args, **kwargs):
+        """ Modification of the BaseModelOutputWithPoolingAndCrossAttentions object
+
+        We're going to pass in the hidden_state as the pooled output because
+        `RobertaClassificationHead` will calculate a pooled-output representation
+        of the [CLS] token
+
+        see link below for details:
+            https://github.com/huggingface/transformers/issues/8776#issuecomment-733557182
+        """
         outputs = self.model(*args, **kwargs)
         outputs.sequence_output = outputs.last_hidden_state
-        outputs.pooled_output = outputs.pooler_output
+        outputs.pooled_output = outputs.last_hidden_state
         return outputs
