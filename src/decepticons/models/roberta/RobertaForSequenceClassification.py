@@ -15,6 +15,7 @@ class RobertaForSequenceClassification(
         super().__init__(config=config)
         self.model = RobertaModel(config=config, add_pooling_layer=False)
         self.classifier = RobertaClassificationHead(config=config)
+        self.problem_type = None
 
         self.init_weights()
 

@@ -15,6 +15,7 @@ class BertForSequenceClassification(
         super().__init__(config=config)
         self.model = BertModel(config=config)
         self.classifier = BertSequenceClassificationHead(config=config)
+        self.problem_type = None
 
     def get_model_outputs(self, *args, **kwargs):
         outputs = self.model(*args, **kwargs)
