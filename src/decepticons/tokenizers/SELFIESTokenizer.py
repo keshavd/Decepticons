@@ -29,7 +29,6 @@ class SELFIESDecoder:
 class SELFIESTokenizer(PreTrainedTokenizerFast):
     def __init__(self, training_iterable: Iterable = (), **kwargs):
         selfies_tokenzier = Tokenizer(WordLevel(unk_token="[UNK]"))
-        selfies_tokenzier.normalizer = Sequence([Lowercase(), NFD()])
         selfies_tokenzier.pre_tokenizer = PreTokenizer.custom(SELFIESPreTokenizer())
         selfies_tokenzier.decoder = Decoder.custom(SELFIESDecoder())
         selfies_tokenzier.post_processor = TemplateProcessing(
