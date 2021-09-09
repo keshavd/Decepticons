@@ -1,32 +1,21 @@
 from transformers import PreTrainedTokenizerFast
 from tokenizers.models import WordLevel
-from tokenizers import Tokenizer, NormalizedString, PreTokenizedString
-from tokenizers.normalizers import Sequence, Lowercase, NFD
+from tokenizers import Tokenizer
 from tokenizers.pre_tokenizers import PreTokenizer
 from tokenizers.decoders import Decoder
 from tokenizers.processors import TemplateProcessing
 from tokenizers.trainers import WordLevelTrainer
-import selfies as sf
-from typing import List, Iterable
-
-
-class SELFIESPreTokenizer:
-    def selfies_split(
-        self, i: int, normalized_str: NormalizedString
-    ) -> List[NormalizedString]:
-        splits = list(sf.split_selfies(sf.encoder(str(normalized_str))))
-        return [NormalizedString(x) for x in splits]
-
-    def pre_tokenize(self, pretok: PreTokenizedString):
-        pretok.split(self.selfies_split)
-
-
-class SELFIESDecoder:
-    def decode(self, tokens: List[str]) -> str:
-        return sf.decoder("".join(tokens))
+from typing import Iterable
+from decepticons.tokenizers.decoders.SELFIESDecoder import SELFIESDecoder
+from decepticons.tokenizers.pre_tokenizers.SELFIESPreTokenizer import (
+    SELFIESPreTokenizer,
+)
 
 
 class SELFIESTokenizer(PreTrainedTokenizerFast):
+    """
+    
+    """
     def __init__(self, training_iterable: Iterable = (), **kwargs):
         selfies_tokenzier = Tokenizer(WordLevel(unk_token="[UNK]"))
         selfies_tokenzier.pre_tokenizer = PreTokenizer.custom(SELFIESPreTokenizer())
