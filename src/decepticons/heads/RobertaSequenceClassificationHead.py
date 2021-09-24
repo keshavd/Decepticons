@@ -22,6 +22,7 @@ class RobertaOnlyClassificationHead(nn.Module):
 
     def __init__(self, config):
         super().__init__()
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
 
     def forward(self, projection, **kwargs):
