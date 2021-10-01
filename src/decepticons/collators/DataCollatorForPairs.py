@@ -17,7 +17,6 @@ class DataCollatorForPairs(DataCollatorMixin):
         pad_to_multiple_of: Optional[int] = None,
         label_pad_token_id: int = -100,
         return_tensors: str = "pt",
-        input_prefix: str = None,
     ):
         self.tokenizer = tokenizer
         self.padding = padding
@@ -25,17 +24,7 @@ class DataCollatorForPairs(DataCollatorMixin):
         self.pad_to_multiple_of = pad_to_multiple_of
         self.label_pad_token_id = label_pad_token_id
         self.return_tensors = return_tensors
-        self.input_prefix = input_prefix
-        if input_prefix is not None:
-            self.lookup_dataset = lookup_dataset.rename_columns(
-                {
-                    f"{input_prefix}{input_name}": input_name
-                    for input_name in self.tokenizer.model_input_names
-                }
-            )
-            self.lookup_dataset.set_format(columns=self.tokenizer.model_input_names)
-        else:
-            self.lookup_dataset.set_format(columns=self.tokenizer.model_input_names)
+        self.lookup_dataset = lookup_dataset
 
     def torch_call(self, features):
         import torch
