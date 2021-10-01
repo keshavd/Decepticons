@@ -12,12 +12,12 @@ class DataCollatorForMultiModalPairs(DataCollatorMixin):
         self,
         tokenizer_0: PreTrainedTokenizerBase,
         lookup_dataset_0: Dataset,
-        tokenizer_1: PreTrainedTokenizerBase,
-        lookup_dataset_1: Dataset,
+        tokenizer: PreTrainedTokenizerBase,
+        lookup_dataset: Dataset,
         max_length_0: Optional[int] = None,
         label_pad_token_id_0: int = -100,
-        max_length_1: Optional[int] = None,
-        label_pad_token_id_1: int = -100,
+        max_length: Optional[int] = None,
+        label_pad_token_id: int = -100,
         padding: Union[bool, str, PaddingStrategy] = True,
         pad_to_multiple_of: Optional[int] = None,
         return_tensors: str = "pt",
@@ -25,13 +25,13 @@ class DataCollatorForMultiModalPairs(DataCollatorMixin):
     ):
         self.lookup_dataset_0 = lookup_dataset_0
         self.tokenizer_0 = tokenizer_0
-        self.lookup_dataset_1 = lookup_dataset_1
-        self.tokenizer_1 = tokenizer_1
+        self.lookup_dataset = lookup_dataset
+        self.tokenizer = tokenizer
         self.padding = padding
         self.max_length_0 = max_length_0
         self.label_pad_token_id_0 = label_pad_token_id_0
-        self.max_length_1 = max_length_1
-        self.label_pad_token_id_1 = label_pad_token_id_1
+        self.max_length = max_length
+        self.label_pad_token_id = label_pad_token_id
         self.pad_to_multiple_of = pad_to_multiple_of
         self.return_tensors = return_tensors
         self.symmetric_relationship = symmetric_relationship
@@ -46,11 +46,11 @@ class DataCollatorForMultiModalPairs(DataCollatorMixin):
             else None
         )
         a = [self.lookup_dataset_0[feature["a"]] for feature in features]
-        b = [self.lookup_dataset_1[feature["b"]] for feature in features]
+        b = [self.lookup_dataset[feature["b"]] for feature in features]
 
         if self.symmetric_relationship:
             a += [self.lookup_dataset_0[feature["b"]] for feature in features]
-            b += [self.lookup_dataset_1[feature["a"]] for feature in features]
+            b += [self.lookup_dataset[feature["a"]] for feature in features]
             labels += labels
 
         batch_a = self.tokenizer_0.pad(
@@ -61,10 +61,10 @@ class DataCollatorForMultiModalPairs(DataCollatorMixin):
             # Conversion to tensors will fail if we have labels as they are not of the same length yet.
             return_tensors="pt" if labels is None else None,
         )
-        batch_b = self.tokenizer_1.pad(
+        batch_b = self.tokenizer.pad(
             b,
             padding=self.padding,
-            max_length=self.max_length_1,
+            max_length=self.max_length,
             pad_to_multiple_of=self.pad_to_multiple_of,
             # Conversion to tensors will fail if we have labels as they are not of the same length yet.
             return_tensors="pt" if labels is None else None,
@@ -79,7 +79,7 @@ class DataCollatorForMultiModalPairs(DataCollatorMixin):
             {
                 "%s_b" % k: torch.tensor(v, dtype=torch.int64)
                 for k, v in batch_b.items()
-                if k in self.tokenizer_1.model_input_names
+                if k in self.tokenizer.model_input_names
             }
         )
         full_batch["labels"] = labels
