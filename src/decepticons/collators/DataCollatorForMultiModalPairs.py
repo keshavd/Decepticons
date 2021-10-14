@@ -83,4 +83,5 @@ class DataCollatorForMultiModalPairs(DataCollatorMixin):
             }
         )
         full_batch["labels"] = labels
+        full_batch = {k: torch.tensor(v, dtype=torch.int64) for k, v in full_batch.items()}
         return full_batch
