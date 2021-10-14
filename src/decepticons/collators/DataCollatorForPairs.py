@@ -65,6 +65,5 @@ class DataCollatorForPairs(DataCollatorMixin):
                 if k in self.tokenizer.model_input_names
             }
         )
-        full_batch["labels"] = labels
-        full_batch = {k: torch.tensor(v, dtype=torch.int64) for k, v in full_batch.items()}
+        full_batch["labels"] = torch.tensor(labels, dtype=torch.int64)
         return full_batch
