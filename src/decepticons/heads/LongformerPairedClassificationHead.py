@@ -10,7 +10,7 @@ class LongformerPairedClassificationHead(LongformerClassificationHead):
         super().__init__(config=config)
 
     def forward(self, hidden_states_a, hidden_states_b, **kwargs):
-        hidden_states = torch.cat([hidden_states_a[:, 0, :], hidden_states_b[:, 0, :]])
+        hidden_states = torch.cat([hidden_states_a[:, 0, :], hidden_states_b[:, 0, :]], 1)
         hidden_states = self.dropout(hidden_states)
         hidden_states = self.dense(hidden_states)
         hidden_states = torch.tanh(hidden_states)
