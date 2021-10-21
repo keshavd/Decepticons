@@ -15,11 +15,11 @@ class TokenClassificationCrfHead(nn.Module):
         """ Returns negative log-likelihood"""
         x = self.dropout(sequence_output)
         x = self.classifier(x)
-        x = self.crf(emission=x, mask=mask, tag=tags, reduction=reduction)
+        x = self.crf(emissions=x, mask=mask, tag=tags, reduction=reduction)
         return torch.neg(x)
 
     def predict(self, sequence_output, mask=None):
         """ Returns the calculated labels via viterbi algo"""
         x = self.classifier.eval()(sequence_output)
-        x = self.crf.decode(emission=x, mask=mask)
+        x = self.crf.decode(emissions=x, mask=mask)
         return F.one_hot(x, num_classes=self.crf.num_tags)
