@@ -1,9 +1,11 @@
 import torch
+from torch.nn import CrossEntropyLoss
 from transformers.modeling_outputs import TokenClassifierOutput
 from transformers import PreTrainedModel
 
 
 class TokenClassificationCrfMixin(PreTrainedModel):
+    """Performs Token-level CRF Classification with model's `sequence_output`"""
     def forward(
         self,
         input_ids=None,
@@ -17,6 +19,11 @@ class TokenClassificationCrfMixin(PreTrainedModel):
         output_hidden_states=None,
         return_dict=None,
     ):
+        r"""
+        labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
+            Labels for computing the token classification loss. Indices should be in ``[0, ..., config.num_labels -
+            1]``.
+        """
         return_dict = (
             return_dict if return_dict is not None else self.config.use_return_dict
         )
@@ -31,12 +38,12 @@ class TokenClassificationCrfMixin(PreTrainedModel):
             output_hidden_states=output_hidden_states,
             return_dict=return_dict,
         )
-        emissions = outputs.hidden_states[0]
-        log_likelihood = self.classifier(
-            emissions=emissions, tags=labels, mask=attention_mask
+        sequence_output = outputs.sequence_output
+        loss = self.classifier(
+            emissions=sequence_output, tags=labels, mask=attention_mask
         )
-        loss = torch.neg(torch.abs(log_likelihood))
-        logits = None
+        # Made up the logits (its just one-hot encoded labels)
+        logits = self.classifier.predict(sequence_output, mask=attention_mask)
         return TokenClassifierOutput(
             loss=loss,
             logits=logits,
