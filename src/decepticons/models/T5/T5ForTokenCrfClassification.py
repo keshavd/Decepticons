@@ -6,7 +6,7 @@ from transformers import T5EncoderModel
 from decepticons.interfaces.huggingface import HFClassificationInterface
 
 
-class T5ForTokenClassification(
+class T5ForTokenCrfClassification(
     TokenClassificationCrfMixin, T5EncoderModel, HFClassificationInterface
 ):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
