@@ -15,7 +15,7 @@ class TokenClassificationCrfHead(nn.Module):
         """ Returns negative log-likelihood"""
         x = self.dropout(sequence_output)
         x = self.classifier(x)
-        x = self.crf(emissions=x, mask=mask, tag=tags, reduction=reduction)
+        x = self.crf(emissions=x, mask=mask, tags=tags, reduction=reduction)
         return torch.neg(x)
 
     def predict(self, sequence_output, mask=None):
