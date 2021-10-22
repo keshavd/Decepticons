@@ -36,11 +36,19 @@ class RobertaClassificationHead(nn.Module):
 
     def __init__(self, config):
         super().__init__()
-        self.hidden_proj = RobertaNoClassificationHead(config=config)
-        self.out_proj = RobertaOnlyClassificationHead(config=config)
+        # Hidden Projection
+        self.dense = nn.Linear(config.hidden_size, config.hidden_size)
+        self.dropout = nn.Dropout(config.hidden_dropout_prob)
+        # Output Projection
+        self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
 
     def forward(self, features, **kwargs):
+        # Get Hidden Projection
         x = features[:, 0, :]  # take <s> token (equiv. to [CLS])
-        x = self.hidden_proj(x)
+        x = self.dropout(x)
+        x = self.dense(x)
+        x = torch.tanh(x)
+        # Get Output Projection
+        x = self.dropout(x)
         x = self.out_proj(x)
         return x
