@@ -9,7 +9,7 @@ class TokenClassificationCrfHead(nn.Module):
         super().__init__()
         self.dropout = nn.Dropout(config.hidden_dropout_prob)
         self.classifier = nn.Linear(config.hidden_size, config.num_labels)
-        self.crf = CRF(config.num_labels)
+        self.crf = CRF(config.num_labels, batch_first=True)
 
     def forward(self, sequence_output, tags, mask=None, reduction="sum"):
         """ Returns negative log-likelihood"""
