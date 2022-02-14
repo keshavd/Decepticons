@@ -1,4 +1,4 @@
-from torch import nn
+from torch import nn, onnx, randn
 
 
 class BertSequenceClassificationHead(nn.Module):
@@ -8,7 +8,7 @@ class BertSequenceClassificationHead(nn.Module):
         super().__init__()
         classifier_dropout = (
             config.classifier_dropout
-            if hasattr(config, 'classifier_dropout')
+            if hasattr(config, "classifier_dropout")
             else config.hidden_dropout_prob
         )
         self.dropout = nn.Dropout(classifier_dropout)

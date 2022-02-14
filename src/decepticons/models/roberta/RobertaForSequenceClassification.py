@@ -21,7 +21,7 @@ class RobertaForSequenceClassification(
         self.init_weights()
 
     def get_model_outputs(self, *args, **kwargs):
-        """ Modification of the BaseModelOutputWithPoolingAndCrossAttentions object
+        """Modification of the BaseModelOutputWithPoolingAndCrossAttentions object
 
         We're going to pass in the hidden_state as the pooled output because
         `RobertaClassificationHead` will calculate a pooled-output representation
@@ -34,3 +34,14 @@ class RobertaForSequenceClassification(
         outputs.sequence_output = outputs.last_hidden_state
         outputs.pooled_output = outputs.last_hidden_state
         return outputs
+
+
+class RobertaForSequenceClassificationWithActiveLearning(
+    RobertaForSequenceClassification
+):
+    def __init__(self, config, **kwargs):
+        from baal.bayesian.dropout import patch_module
+
+        super().__init__(config=config, **kwargs)
+        self.model = patch_module(self.model)
+        self.classifier = patch_module(self.classifier)
