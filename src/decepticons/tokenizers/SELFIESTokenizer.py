@@ -10,17 +10,23 @@ from decepticons.tokenizers.decoders.SELFIESDecoder import SELFIESDecoder
 from decepticons.tokenizers.pre_tokenizers.SELFIESPreTokenizer import (
     SELFIESPreTokenizer,
 )
+from tokenizers.normalizers import Normalizer
+from decepticons.tokenizers.normalizers.RemoveChiralityNormalizer import (
+    RemoveChiralityNormalizer,
+)
 
 
 class SELFIESTokenizer(PreTrainedTokenizerFast):
     """
-    
+    Converts a SMILES string into a SELFIES string.
     """
+
     def __init__(self, training_iterable: Iterable = (), **kwargs):
-        selfies_tokenzier = Tokenizer(WordLevel(unk_token="[UNK]"))
-        selfies_tokenzier.pre_tokenizer = PreTokenizer.custom(SELFIESPreTokenizer())
-        selfies_tokenzier.decoder = Decoder.custom(SELFIESDecoder())
-        selfies_tokenzier.post_processor = TemplateProcessing(
+        selfies_tokenizer = Tokenizer(WordLevel(unk_token="[UNK]"))
+        selfies_tokenizer.normalizer = Normalizer.custom(RemoveChiralityNormalizer())
+        selfies_tokenizer.pre_tokenizer = PreTokenizer.custom(SELFIESPreTokenizer())
+        selfies_tokenizer.decoder = Decoder.custom(SELFIESDecoder())
+        selfies_tokenizer.post_processor = TemplateProcessing(
             single="[CLS] $A [SEP]",
             pair="[CLS] $A [SEP] $B:1 [SEP]:1",
             special_tokens=[
@@ -31,8 +37,8 @@ class SELFIESTokenizer(PreTrainedTokenizerFast):
         trainer = WordLevelTrainer(
             special_tokens=["[UNK]", "[CLS]", "[SEP]", "[PAD]", "[MASK]"]
         )
-        selfies_tokenzier.train_from_iterator(training_iterable, trainer)
-        super().__init__(tokenizer_object=selfies_tokenzier, **kwargs)
+        selfies_tokenizer.train_from_iterator(training_iterable, trainer)
+        super().__init__(tokenizer_object=selfies_tokenizer, **kwargs)
         self.bos_token = "[CLS]"
         self.eos_token = "[SEP]"
         self.unk_token = "[UNK]"
