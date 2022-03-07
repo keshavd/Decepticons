@@ -5,7 +5,13 @@ from transformers import PreTrainedModel
 
 
 class TokenClassificationMixin(PreTrainedModel):
-    """Performs Token level Classification with the `sequence_output` from a model"""
+    """Performs Token level Classification with the `sequence_output` from a model
+
+    labels_pad_token_id (int):
+        Use this ID when your labels include padding, and you do not want to predict the pad token.
+        This is used in the loss computation.
+        If you also have padding in the input-ids, just use attention_mask.
+    """
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
