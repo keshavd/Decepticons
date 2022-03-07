@@ -22,6 +22,7 @@ class TokenClassificationMixin(PreTrainedModel):
         output_attentions=None,
         output_hidden_states=None,
         return_dict=None,
+        token_attention_mask=None,
     ):
         r"""
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
@@ -45,7 +46,10 @@ class TokenClassificationMixin(PreTrainedModel):
         )
 
         sequence_output = outputs.sequence_output
-        logits = self.classifier(sequence_output)
+        if token_attention_mask:
+            logits = self.classifier(sequence_output[token_attention_mask.to(sequence_output.device)])
+        else:
+            logits = self.classifier(sequence_output)
 
         loss = None
         if labels is not None:
