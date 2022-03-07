@@ -22,7 +22,7 @@ class TokenClassificationMixin(PreTrainedModel):
         output_attentions=None,
         output_hidden_states=None,
         return_dict=None,
-        token_attention_mask=None,
+        labels_pad_token_id: int = None,
     ):
         r"""
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
@@ -46,17 +46,23 @@ class TokenClassificationMixin(PreTrainedModel):
         )
 
         sequence_output = outputs.sequence_output
-        if token_attention_mask:
-            logits = self.classifier(sequence_output[token_attention_mask.to(sequence_output.device)])
-        else:
-            logits = self.classifier(sequence_output)
-
+        logits = self.classifier(sequence_output)
         loss = None
+
         if labels is not None:
             loss_fct = CrossEntropyLoss()
             # Only keep active parts of the loss
             if attention_mask is not None:
                 active_loss = attention_mask.view(-1) == 1
+                active_logits = logits.view(-1, self.num_labels)
+                active_labels = torch.where(
+                    active_loss,
+                    labels.view(-1),
+                    torch.tensor(loss_fct.ignore_index).type_as(labels),
+                )
+                loss = loss_fct(active_logits, active_labels)
+            if labels_pad_token_id:
+                active_loss = labels.view(-1) != labels_pad_token_id
                 active_logits = logits.view(-1, self.num_labels)
                 active_labels = torch.where(
                     active_loss,
