@@ -13,8 +13,9 @@ class TokenClassificationMixin(PreTrainedModel):
         If you also have padding in the input-ids, just use attention_mask.
     """
 
-    def __init__(self, **kwargs):
+    def __init__(self, labels_pad_token_id: int = None, **kwargs):
         super().__init__(**kwargs)
+        self.labels_pad_token_id = labels_pad_token_id
 
     def forward(
         self,
@@ -28,7 +29,6 @@ class TokenClassificationMixin(PreTrainedModel):
         output_attentions=None,
         output_hidden_states=None,
         return_dict=None,
-        labels_pad_token_id: int = None,
     ):
         r"""
         labels (:obj:`torch.LongTensor` of shape :obj:`(batch_size, sequence_length)`, `optional`):
@@ -67,8 +67,8 @@ class TokenClassificationMixin(PreTrainedModel):
                     torch.tensor(loss_fct.ignore_index).type_as(labels),
                 )
                 loss = loss_fct(active_logits, active_labels)
-            if labels_pad_token_id:
-                active_loss = labels.view(-1) != labels_pad_token_id
+            if self.labels_pad_token_id:
+                active_loss = labels.view(-1) != self.labels_pad_token_id
                 active_logits = logits.view(-1, self.num_labels)
                 active_labels = torch.where(
                     active_loss,
