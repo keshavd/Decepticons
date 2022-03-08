@@ -13,11 +13,12 @@ class BertForTokenClassification(
 ):
     _keys_to_ignore_on_load_unexpected = [r"pooler"]
 
-    def __init__(self, config, **kwargs):
+    def __init__(self, config, ignore_index, **kwargs):
         super().__init__(config=config)
         self.model = BertModel(config=config, add_pooling_layer=False)
         self.classifier = TokenClassificationHead(config=config)
         self.num_labels = config.num_labels
+        self.ignore_index = ignore_index
 
         self.init_weights()
 
