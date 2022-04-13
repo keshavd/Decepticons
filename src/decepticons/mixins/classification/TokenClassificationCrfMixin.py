@@ -39,7 +39,7 @@ class TokenClassificationCrfMixin(PreTrainedModel):
             return_dict=return_dict,
         )
         sequence_output = outputs.sequence_output
-        loss = self.classifier(
+        loss = self.classifier.get_loss(
             emissions=sequence_output, tags=labels, mask=attention_mask
         )
         # Made up the logits (its just one-hot encoded labels)
