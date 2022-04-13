@@ -42,8 +42,8 @@ class TokenClassificationCrfMixin(PreTrainedModel):
         sequence_output = outputs.sequence_output
         ignore_mask = torch.as_tensor(labels != self.ignore_index)
         loss = self.classifier.get_loss(
-            sequence_output=torch.masked_select(sequence_output, ignore_mask),
-            tags=torch.masked_select(labels, ignore_mask),
+            sequence_output=sequence_output.masked_fill_(ignore_mask, 0.0),
+            tags=labels,
             mask=attention_mask > 0,
         )
         # Made up the logits (its just one-hot encoded labels)
