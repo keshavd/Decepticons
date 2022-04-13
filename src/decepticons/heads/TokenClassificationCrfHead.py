@@ -24,7 +24,7 @@ class TokenClassificationCrfHead(nn.Module):
         """
         x = self.classifier.eval()(sequence_output)
         x = self.crf.decode(emissions=x, mask=mask)
-        return F.one_hot(torch.Tensor(x), num_classes=self.crf.num_tags)
+        return F.one_hot(torch.as_tensor(x), num_classes=self.crf.num_tags)
 
     def get_loss(self, sequence_output, tags, mask=None, reduction="sum"):
         """ Returns negative log-likelihood"""
