@@ -6,6 +6,7 @@ from transformers import PreTrainedModel
 
 class TokenClassificationCrfMixin(PreTrainedModel):
     """Performs Token-level CRF Classification with model's `sequence_output`"""
+
     def forward(
         self,
         input_ids=None,
@@ -40,10 +41,10 @@ class TokenClassificationCrfMixin(PreTrainedModel):
         )
         sequence_output = outputs.sequence_output
         loss = self.classifier.get_loss(
-            sequence_output=sequence_output, tags=labels, mask=attention_mask
+            sequence_output=sequence_output, tags=labels, mask=attention_mask > 0
         )
         # Made up the logits (its just one-hot encoded labels)
-        logits = self.classifier.predict(sequence_output, mask=attention_mask)
+        logits = self.classifier.predict(sequence_output, mask=attention_mask > 0)
         return TokenClassifierOutput(
             loss=loss,
             logits=logits,
