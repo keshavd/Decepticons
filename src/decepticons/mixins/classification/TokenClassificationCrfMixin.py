@@ -42,7 +42,7 @@ class TokenClassificationCrfMixin(PreTrainedModel):
         sequence_output = outputs.sequence_output
         ignore_mask = torch.as_tensor(labels != self.ignore_index)
         loss = self.classifier.get_loss(
-            sequence_output=sequence_output.masked_fill_(ignore_mask, 0.0),
+            sequence_output=sequence_output.masked_fill_(ignore_mask.unsqueeze(-1).expand(sequence_output.size()), 0.0),
             tags=labels,
             mask=attention_mask > 0,
         )
