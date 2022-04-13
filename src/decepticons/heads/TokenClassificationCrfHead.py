@@ -17,13 +17,13 @@ class TokenClassificationCrfHead(nn.Module):
         x = self.classifier(x)
         return x
 
-    def predict(self, sequence_output, attention_mask=None):
+    def predict(self, sequence_output, mask=None):
         """Returns the calculated labels via viterbi algo
 
         One-hot encoded to fake logits
         """
         x = self.classifier.eval()(sequence_output)
-        x = self.crf.decode(emissions=x, mask=attention_mask)
+        x = self.crf.decode(emissions=x, mask=mask)
         return F.one_hot(x, num_classes=self.crf.num_tags)
 
     def get_loss(self, sequence_output, tags, mask=None, reduction="sum"):
