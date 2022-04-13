@@ -12,7 +12,7 @@ class TokenClassificationCrfHead(nn.Module):
         self.crf = CRF(config.num_labels, batch_first=True)
 
     def forward(self, sequence_output):
-        """ Returns logits from classification layer"""
+        """Returns logits from classification layer"""
         x = self.dropout(sequence_output)
         x = self.classifier(x)
         return x
@@ -24,10 +24,14 @@ class TokenClassificationCrfHead(nn.Module):
         """
         x = self.classifier.eval()(sequence_output)
         x = self.crf.decode(emissions=x, mask=mask)
-        return F.one_hot(torch.as_tensor(x), num_classes=self.crf.num_tags)
+        return (
+            F.one_hot(torch.as_tensor(x), num_classes=self.crf.num_tags)
+            .transpose(2, 1)
+            .float()
+        )
 
     def get_loss(self, sequence_output, tags, mask=None, reduction="sum"):
-        """ Returns negative log-likelihood"""
+        """Returns negative log-likelihood"""
         x = self.dropout(sequence_output)
         x = self.classifier(x)
         x = self.crf(emissions=x, mask=mask, tags=tags, reduction=reduction)
