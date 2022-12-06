@@ -202,7 +202,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         span_start_indicator = torch.zeros((length,))
         span_start_indicator[span_starts] = True
         span_num = torch.cumsum(span_start_indicator, 0)
-        is_noise = torch.eq(span_num % 2, torch.tensor(1)).long()
+        is_noise = torch.eq(span_num % 2, torch.tensor(1))
         return is_noise[:orig_length]
 
     # Copied from transformers.models.bart.modeling_flax_bart.shift_tokens_right
