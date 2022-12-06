@@ -82,7 +82,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
 
         input_ids_sentinel = self.create_sentinel_ids(mask_indices)
         labels_sentinel = self.create_sentinel_ids(labels_mask)
-
+        print(input_ids.shape, input_ids_sentinel.shape, labels_sentinel.shape)
         batch["input_ids"] = self.filter_input_ids(input_ids, input_ids_sentinel)
         batch["labels"] = self.filter_input_ids(input_ids, labels_sentinel)
 
