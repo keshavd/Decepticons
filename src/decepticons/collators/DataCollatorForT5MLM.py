@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Optional, Union
 from transformers import (
     BatchEncoding,
-    PreTrainedTokenizerBase,
+    PreTrainedTokenizer,
 )
 import torch
 from torch.nn import functional as F
@@ -36,7 +36,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
 
     def __init__(
         self,
-        tokenizer: PreTrainedTokenizerBase,
+        tokenizer: PreTrainedTokenizer,
         noise_density: float,
         mean_noise_span_length: float,
         input_length: int,
@@ -84,6 +84,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         labels_sentinel = self.create_sentinel_ids(labels_mask)
         print(input_ids.shape, input_ids_sentinel.shape, labels_sentinel.shape)
         batch["input_ids"] = self.filter_input_ids(input_ids, input_ids_sentinel)
+        print(batch["input_ids"].shape)
         batch["labels"] = self.filter_input_ids(input_ids, labels_sentinel)
 
         if batch["input_ids"].shape[-1] != self.input_length:
