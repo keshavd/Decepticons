@@ -47,6 +47,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         max_length: Optional[int] = None,
         pad_to_multiple_of: Optional[int] = None,
         return_tensors: str = "pt",
+        enforce_lengths: bool = False,
     ):
         self.tokenizer = tokenizer
         self.noise_density = noise_density
@@ -59,6 +60,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         self.max_length = max_length
         self.pad_to_multiple_of = pad_to_multiple_of
         self.return_tensors = return_tensors
+        self.enforce_lengths = enforce_lengths
 
     def torch_call(self, features):
         # convert list to dict and tensorize input
@@ -80,20 +82,18 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         )
         labels_mask = ~mask_indices
 
-        input_ids_sentinel = self.create_sentinel_ids(mask_indices)
-        labels_sentinel = self.create_sentinel_ids(labels_mask)
-        print(input_ids.shape, input_ids_sentinel.shape, labels_sentinel.shape)
+        input_ids_sentinel = self.create_sentinel_ids(mask_indices.long())
+        labels_sentinel = self.create_sentinel_ids(labels_mask.long())
         batch["input_ids"] = self.filter_input_ids(input_ids, input_ids_sentinel)
-        print(batch["input_ids"].shape)
         batch["labels"] = self.filter_input_ids(input_ids, labels_sentinel)
 
-        if batch["input_ids"].shape[-1] != self.input_length:
+        if self.enforce_lengths and batch["input_ids"].shape[-1] != self.input_length:
             raise ValueError(
                 f"`input_ids` are incorrectly preprocessed. `input_ids` length is {batch['input_ids'].shape[-1]}, but"
                 f" should be {self.input_length}."
             )
 
-        if batch["labels"].shape[-1] != self.target_length:
+        if self.enforce_lengths and batch["labels"].shape[-1] != self.target_length:
             raise ValueError(
                 f"`labels` are incorrectly preprocessed. `labels` length is {batch['labels'].shape[-1]}, but should be"
                 f" {self.target_length}."
