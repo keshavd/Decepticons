@@ -70,6 +70,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
             max_length=self.max_length,
             pad_to_multiple_of=self.pad_to_multiple_of,
             return_tensors=self.return_tensors,
+            return_attention_mask=False,
         )
         input_ids = batch["input_ids"]
         batch_size, expanded_input_length = input_ids.shape
