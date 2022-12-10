@@ -162,12 +162,10 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         """
 
         orig_length = length
-        num_noise_tokens = torch.round(torch.tensor(orig_length * 0.2))
+        num_noise_tokens = torch.round(torch.tensor(orig_length * self.noise_density))
         # avoid degeneracy by ensuring positive numbers of noise and nonnoise tokens.
         num_noise_tokens = min(max(num_noise_tokens, 1), length - 1)
-        num_noise_spans = torch.round(
-            torch.tensor(num_noise_tokens / self.mean_noise_span_length)
-        )
+        num_noise_spans = torch.round(num_noise_tokens / self.mean_noise_span_length)
         # avoid degeneracy by ensuring positive number of noise spans
         num_noise_spans = max(num_noise_spans, 1)
         num_nonnoise_tokens = length - num_noise_tokens
