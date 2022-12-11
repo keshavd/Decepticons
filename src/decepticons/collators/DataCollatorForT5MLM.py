@@ -76,7 +76,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
                 return_attention_mask=False,
             )
         else:
-            batch = features
+            batch = {'input_ids':torch.stack([x['input_ids'] for x in features])}
         input_ids = batch["input_ids"]
         batch_size, expanded_input_length = input_ids.shape
 
