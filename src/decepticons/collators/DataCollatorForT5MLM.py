@@ -48,6 +48,7 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         pad_to_multiple_of: Optional[int] = None,
         return_tensors: str = "pt",
         enforce_lengths: bool = False,
+        use_tokenizer=True,
     ):
         self.tokenizer = tokenizer
         self.noise_density = noise_density
@@ -61,17 +62,21 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         self.pad_to_multiple_of = pad_to_multiple_of
         self.return_tensors = return_tensors
         self.enforce_lengths = enforce_lengths
+        self.use_tokenizer = use_tokenizer
 
     def torch_call(self, features):
         # convert list to dict and tensorize input
-        batch = self.tokenizer.pad(
-            features,
-            padding=self.padding,
-            max_length=self.max_length,
-            pad_to_multiple_of=self.pad_to_multiple_of,
-            return_tensors=self.return_tensors,
-            return_attention_mask=False,
-        )
+        if self.use_tokenizer:
+            batch = self.tokenizer.pad(
+                features,
+                padding=self.padding,
+                max_length=self.max_length,
+                pad_to_multiple_of=self.pad_to_multiple_of,
+                return_tensors=self.return_tensors,
+                return_attention_mask=False,
+            )
+        else:
+            batch = BatchEncoding(features)
         input_ids = batch["input_ids"]
         batch_size, expanded_input_length = input_ids.shape
 
