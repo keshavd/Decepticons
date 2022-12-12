@@ -109,8 +109,6 @@ class DataCollatorForT5MLM(DataCollatorMixin):
         batch["decoder_input_ids"] = self.shift_tokens_right(
             batch["labels"], self.pad_token_id, self.decoder_start_token_id
         )
-        # debugging
-        del batch["labels"]
 
         return batch
 
