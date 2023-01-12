@@ -12,7 +12,7 @@ class PairedClassificationHead(nn.Module):
         )
         self.dense = nn.Linear(config.hidden_size, config.hidden_size)
         self.dropout = nn.Dropout(classifier_dropout)
-        self.classifier = nn.Linear(config.hidden_size, config.num_labels)
+        self.out_proj = nn.Linear(config.hidden_size, config.num_labels)
 
     def forward(self, hidden_states_a, hidden_states_b, **kwargs):
         hidden_states = torch.cat(
@@ -22,5 +22,5 @@ class PairedClassificationHead(nn.Module):
         hidden_states = self.dense(hidden_states)
         hidden_states = torch.tanh(hidden_states)
         hidden_states = self.dropout(hidden_states)
-        output = self.classifier(hidden_states)
+        output = self.out_proj(hidden_states)
         return output
