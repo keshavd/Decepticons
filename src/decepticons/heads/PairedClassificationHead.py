@@ -2,7 +2,7 @@ from torch import nn, onnx, randn
 import torch
 
 
-class SiameseContrastiveLossHead(nn.Module):
+class PairedClassificationHead(nn.Module):
     def __init__(self, config):
         super().__init__()
         classifier_dropout = (
